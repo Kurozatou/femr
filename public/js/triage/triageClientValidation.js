@@ -31,6 +31,21 @@ var triageFieldValidator = {
             $('#ageClassificationWrap').css('border', 'none');
         }
 
+        //Validate Age Classification
+        var ageMap = {
+            "infant":[0, 1],
+            "child":[2, 12],
+            "teen":[13, 17],
+            "adult":[18, 64],
+            "elder":[65, 150]
+        };
+        var currAge = patientInformation.years.val();
+        var ageClass = patientInformation.ageClassification.filter(':checked').val();
+        if (currAge < ageMap[ageClass][0] || currAge > ageMap[ageClass][1]) {
+            alert("The inputted age (" + currAge + ") does not match the selected age classification (" + ageClass + "). Please select the correct classification.");
+            event.preventDefault();
+        }
+
     },
     validatePatientVitals: function () {
         var patientVitals = triageFields.patientVitals;//located in triage.js
