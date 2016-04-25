@@ -282,14 +282,25 @@ public class MedicalController extends Controller {
         SqlUpdate down = Ebean.createSqlUpdate("DELETE FROM patient_encounter_tab_fields WHERE patient_encounter_id = " + patientEncounterItem.getId());
         down.execute();
         List<String> problemList = new ArrayList<>();
+        StringBuilder diagnosis_fields = new StringBuilder();
         for (ProblemItem pi : viewModelPost.getProblems()) {
             if (StringUtils.isNotNullOrWhiteSpace(pi.getName())) {
                 problemList.add(pi.getName());
+                diagnosis_fields.append(pi.getName() + " ");
             }
         }
         if (problemList.size() > 0) {
             encounterService.createProblems(problemList, patientEncounterItem.getId(), currentUserSession.getId());
         }
+        Date now = new Date();
+        //SqlUpdate insert = Ebean.createSqlUpdate("INSERT INTO patient_diagnosis_changes (user_id, patient_encounter_id, date_changed) " +
+        //        "VALUES (" + currentUserSession.getId() + "," + patientEncounterItem.getId() + "," + now + ")");
+        SqlUpdate insert = Ebean.createSqlUpdate("INSERT INTO patient_diagnosis_changes (user_id, patient_encounter_id, diagnosis_fields, date_changed) VALUES (:user, :encounter, :fields, :date)");
+        insert.setParameter("user", currentUserSession.getId());
+        insert.setParameter("encounter", patientEncounterItem.getId());
+        insert.setParameter("fields", diagnosis_fields.toString());
+        insert.setParameter("date", now);
+        insert.execute();
 
         //get tab fields that do not have a related chief complaint and put them into a nice map
         Map<String, String> tabFieldItemsWithNoRelatedChiefComplaint = new HashMap<>();
