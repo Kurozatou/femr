@@ -1,5 +1,7 @@
 package femr.ui.controllers;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.SqlUpdate;
 import com.google.inject.Inject;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
@@ -277,6 +279,8 @@ public class MedicalController extends Controller {
         patientEncounterItem = encounterService.checkPatientInToMedical(patientEncounterItem.getId(), currentUserSession.getId()).getResponseObject();
 
         //get and save problems
+        SqlUpdate down = Ebean.createSqlUpdate("DELETE FROM patient_encounter_tab_fields WHERE patient_encounter_id = " + patientEncounterItem.getId());
+        down.execute();
         List<String> problemList = new ArrayList<>();
         for (ProblemItem pi : viewModelPost.getProblems()) {
             if (StringUtils.isNotNullOrWhiteSpace(pi.getName())) {
