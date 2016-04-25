@@ -1,20 +1,19 @@
 var problemFeature = {
-    allProblems: $('.newProblems, .oldProblems'),
-    newProblems: $('input[name].newProblems'),
+    problems: $('input[name].problems'),
+    startingSize: $('input[name].problems').length,
     refreshSelectors: function () {
-        problemFeature.allProblems = $(problemFeature.allProblems.selector);
-        problemFeature.newProblems = $(problemFeature.newProblems.selector);
+        problemFeature.problems = $(problemFeature.problems.selector);
     },
     getNumberOfNonReadonlyProblemFields: function () {
         problemFeature.refreshSelectors();
-        return problemFeature.newProblems.length;
+        return problemFeature.problems.length;
     },
     addProblemField: function () {
         var problemIndex = problemFeature.getNumberOfNonReadonlyProblemFields();
         $('.problem')
             .parent()
             .append("<div class='problem'>" +
-            "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm newProblems'/>" +
+            "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm problems'/>" +
             "</div>");
 
         var problemInputElement = $("[name='problems[" + problemIndex + "].name'");
@@ -24,8 +23,8 @@ var problemFeature = {
     },
     removeProblemField: function () {
         problemFeature.refreshSelectors();
-        var lastProblem = $(problemFeature.newProblems).last();
-        if ($(problemFeature.newProblems).size() > 1) {
+        var lastProblem = $(problemFeature.problems).last();
+        if ($(problemFeature.problems).size() > problemFeature.startingSize) {
             if (!$(lastProblem).is('[readonly]')) {
                 $(lastProblem).parent().parent().remove();
             }
@@ -406,7 +405,7 @@ $(document).ready(function () {
         prescriptionFeature.addMedicationTypeahead();
     });
 
-    typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/diagnoses", problemFeature.newProblems.first(), 'diagnoses', true, true);
+    typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/diagnoses", problemFeature.problems.last(), 'diagnoses', true, true);
 });
 
 /**

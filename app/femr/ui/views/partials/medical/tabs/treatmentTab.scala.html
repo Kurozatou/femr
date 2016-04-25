@@ -15,13 +15,13 @@
         <label for="problem">Diagnosis</label>
         <div class="row">
             <div class="col-xs-10 col-sm-10 col-md-10 problemWrap">
-                @for(problem <- problems) {
+                @for(index <- 0 until problems.size()) {
                     <div class="problem">
-                        <input type="text" class="form-control input-sm oldProblems" value="@problem.getName" readonly/>
+                        <input name="problems[@index].name" type="text" class="form-control input-sm problems" value="@problems(index).getName"/>
                     </div>
                 }
                 <div class="problem">
-                    <input name="problems[0].name" type="text" class="form-control input-sm newProblems"/>
+                    <input name="problems[@problems.size()].name" type="text" class="form-control input-sm problems"/>
                 </div>
             </div>
             <div class="col-xs-2 col-sm-2 col-md-2">
